@@ -1,0 +1,9 @@
+https://levelup.gitconnected.com/audio-data-analysis-using-deep-learning-part-1-7f6e08803f60
+https://www.kdnuggets.com/2020/02/audio-data-analysis-deep-learning-python-part-1.html
+http://pageperso.lif.univ-mrs.fr/~francois.denis/IAAM1/scipy-html-1.0.0/generated/scipy.signal.stft.html
+
+code analyse de frequence :
+https://github.com/katejarne/Fundamental-frequency-code
+
+stft de librosa :
+https://librosa.github.io/librosa/generated/librosa.core.stft.html
