@@ -60,3 +60,18 @@ def filterHighLowFreq (stftData):
         stftData[len(stftData)-1-i] = 0
     return stftData
 
+def divideFreq(db,factor):
+    newDbtransp = np.ones((len(db),len(db[0]))).transpose()
+    dbTransp = db.transpose()
+
+    for f in range(len(db)//factor):
+        for t in range (len(db[0])):
+            newDbtransp [t][f] = dbTransp[t][factor*f]
+    newDb = newDbtransp.transpose()
+    return newDb
+
+def harmonicProductSpectrum (db,iterations):
+    dbTest = db
+    for i in range(iterations):
+        dbTest = dbTest*divideFreq(db,i)
+    return dbTest
