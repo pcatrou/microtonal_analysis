@@ -1,8 +1,8 @@
-
 import numpy as np
 from matplotlib import pyplot as plt
 import seaborn as sns
 import parselmouth as ps
+#### already exiting pitch detectoir ####
 
 sns.set() # Use seaborn's default style to make attractive graphs
 file_name = "test-lea"

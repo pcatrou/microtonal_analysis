@@ -7,3 +7,9 @@ https://github.com/katejarne/Fundamental-frequency-code
 
 stft de librosa :
 https://librosa.github.io/librosa/generated/librosa.core.stft.html
+
+parselmouth
+https://github.com/YannickJadoul/Parselmouth
+
+these pithc detection :
+http://www.cs.otago.ac.nz/research/publications/oucs-2008-03.pdf
