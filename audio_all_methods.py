@@ -54,11 +54,12 @@ def extractMainSongLineWithMaxMethod(dbData,filteredEnvelope,timeCoef,frequencie
     return songLine
 
 def filterHighLowFreq (stftData):
-    for i in range(24):
+    for i in range(24): #TODO passer en paramètres les valeurs de filtres... (celles qui marchaient pour lea : 24, 2)
         stftData[i] = 0
     for i in range(len(stftData)//2):
         stftData[len(stftData)-1-i] = 0
     return stftData
+
 
 def divideFreq(db,factor):
     newDbtransp = np.ones((len(db),len(db[0]))).transpose()
@@ -70,8 +71,8 @@ def divideFreq(db,factor):
     newDb = newDbtransp.transpose()
     return newDb
 
-def harmonicProductSpectrum (db,iterations):
-    dbTest = db
-    for i in range(iterations):
-        dbTest = dbTest*divideFreq(db,i)
-    return dbTest
+def harmonicProductSpectrum (db,iterations, coeff):
+    dbInit=db
+    for i in range(1,iterations):
+        db = db*(divideFreq(db,i+1))
+    return db+coeff*dbInit
