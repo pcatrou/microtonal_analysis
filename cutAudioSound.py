@@ -1,13 +1,13 @@
 from pydub import AudioSegment
 
 files_path = 'audio_data/'
-file_name = 'a77547'
+file_name = '05416'
 
 startMin = 0
-startSec = 0
+startSec = 3
 
 endMin = 0
-endSec = 10
+endSec = 30
 
 # Time to miliseconds
 startTime = startMin*60*1000+startSec*1000
