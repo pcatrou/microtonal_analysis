@@ -24,6 +24,7 @@ amplitude,sampleRate = librosa.load(audioData)
 num_fft = 2**13
 #du à l'overlap, il y a 4 fois + de fft faites (1 fft sur 2048px mais la fenetre se deplace de 512 px)
 fftNumber = num_fft//4
+#Si on veut changer les steps de l'envelope, ici calqué sur fft mais peut changer + tard
 envelopeTimeSteps = fftNumber
 envelope = functions.getEnvelope(amplitude,envelopeTimeSteps)
 
