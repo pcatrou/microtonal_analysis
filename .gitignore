@@ -1,2 +1,3 @@
-/.vscode
+.vscode/
 audio_data/
+__pycache__/
