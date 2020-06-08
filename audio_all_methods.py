@@ -106,7 +106,7 @@ def filterHighLowFreq (freqData,lowFilter):
     """
     for i in range(lowFilter): 
         freqData[i] = 0
-    for i in range(len(freqData)//2):
+    for i in range(len(freqData)//2+len(freqData)//3):
         freqData[len(freqData)-1-i] = 0
     return freqData
 

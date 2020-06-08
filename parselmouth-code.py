@@ -5,12 +5,12 @@ import parselmouth as ps
 #### already exiting pitch detectoir ####
 
 sns.set() # Use seaborn's default style to make attractive graphs
-file_name = "test-lea"
+#file_name = "test-lea"
+#file_name = "2015-11-09-20_02_57-cut"
 #file_name = "05416"
-#file_name = "a77547"
-cutted =  ""
+file_name = "a77547-cut"
 
-audioData = "audio_data/"+file_name+cutted+".wav"
+audioData = "audio_data/"+file_name+".wav"
 # Plot nice figures using Python's "standard" matplotlib library
 snd = ps.Sound(audioData)
 
@@ -38,19 +38,31 @@ def draw_pitch(pitch):
     # replace unvoiced samples by NaN to not plot
     pitch_values = pitch.selected_array['frequency']
     pitch_values[pitch_values==0] = np.nan
-    plt.plot(pitch.xs(), pitch_values, 'o', markersize=5, color='w')
-    plt.plot(pitch.xs(), pitch_values, 'o', markersize=2)
-    plt.grid(False)
-    plt.ylim(0, pitch.ceiling)
-    plt.ylabel("fundamental frequency [Hz]")
-
+    plt.plot(pitch.xs(), pitch_values, 'o', markersize=2, color='w')
+    plt.plot(pitch.xs(), pitch_values, 'o', markersize=1)
+    #plt.grid(False)
+    #plt.ylim(0, pitch.ceiling)
+    #plt.ylabel("fundamental frequency [Hz]")
+'''
 pitch = snd.to_pitch()
 # If desired, pre-emphasize the sound fragment before calculating the spectrogram
 pre_emphasized_snd = snd.copy()
 pre_emphasized_snd.pre_emphasize()
 spectrogram = pre_emphasized_snd.to_spectrogram(window_length=0.03, maximum_frequency=8000)
 plt.figure()
-draw_spectrogram(spectrogram)
+#draw_spectrogram(spectrogram)
+plt.twinx()
+draw_pitch(pitch)
+plt.xlim([snd.xmin, snd.xmax])
+plt.show() # or plt.savefig("spectrogram_0.03.pdf")
+'''
+pitch = snd.to_pitch()
+# If desired, pre-emphasize the sound fragment before calculating the spectrogram
+pre_emphasized_snd = snd.copy()
+pre_emphasized_snd.pre_emphasize()
+spectrogram = pre_emphasized_snd.to_spectrogram(window_length=0.03, maximum_frequency=8000)
+plt.figure()
+#draw_spectrogram(spectrogram)
 plt.twinx()
 draw_pitch(pitch)
 plt.xlim([snd.xmin, snd.xmax])
