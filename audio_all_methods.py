@@ -1,5 +1,7 @@
 import numpy as np
 
+THRESHOLD_VALUE_FOR_FILTERING = 31
+
 def getEnvelope(ampl,timeCoeff):
     """
     Get the amplitude envelope of audio data. the time indent is changed to timeCoeff
@@ -41,12 +43,14 @@ def getfilteredEnvelope (envelope,intensityThreshold):
     return filteredEnvelope
 
 # note : faster with np.append than x[i]
-def getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter):
+def getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter,highFilter):
     """
     generate the table with the index of the max amplitude for each time indent 
     of the db data of stft transformed sound signal
     use of a filtered envelop to avoid noise data
     timeCoeff is the time indent of the envelope
+    
+    The dbData is also filtered, if the maximum of the dbData at one moment t is inferior to a threshold value
     
     Parameters:
     dbData,filteredEnvelope,timeCoef,lowFilter
@@ -57,12 +61,11 @@ def getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter):
 
     maxIndex = np.array([])
     #dbDataToFilter = dbData # to not alter dbData
-    rev_data = filterHighLowFreq(dbData,lowFilter).transpose()
+    rev_data = filterHighLowFreq(dbData,lowFilter,highFilter).transpose()
     #rev_data = dbData.transpose()
 
     for i in range(len(dbData[1])-timeCoef-1):
-
-            if (filteredEnvelope[i*timeCoef] == None):
+            if (filteredEnvelope[i*timeCoef] == None or np.max(rev_data[i])<THRESHOLD_VALUE_FOR_FILTERING): #TODO mettre la valeur en variable ?
                 maxIndex =np.append(maxIndex,None)
             else:
                 maxIndex =np.append(maxIndex, int(np.argmax(rev_data[i])))
@@ -70,7 +73,7 @@ def getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter):
 
     return maxIndex
 
-def getPitch(dbData,filteredEnvelope,timeCoef,frequencies,lowFilter):
+def getPitch(dbData,filteredEnvelope,timeCoef,frequencies,lowFilter, highFilter):
     """
     transform the maxIndex to frequencies values. Uses getMaxIndex
     
@@ -80,7 +83,7 @@ def getPitch(dbData,filteredEnvelope,timeCoef,frequencies,lowFilter):
     Returns:
     pitchValues
     """
-    maxIndex = getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter)
+    maxIndex = getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter,highFilter)
     pitchValues = np.array([])
     for i in range(len(maxIndex)):
         if (maxIndex[i] != None and maxIndex[i]>10):
@@ -91,7 +94,7 @@ def getPitch(dbData,filteredEnvelope,timeCoef,frequencies,lowFilter):
     return pitchValues
 
 
-def filterHighLowFreq (freqData,lowFilter):
+def filterHighLowFreq (dbData,lowFilter,highFilter):
     """
     abrupt filter of high and low frequencies by setting their value to 0
     lowFilter sets the index of minimum frequencies
@@ -104,11 +107,23 @@ def filterHighLowFreq (freqData,lowFilter):
     Returns:
     freqData
     """
-    for i in range(lowFilter): 
-        freqData[i] = 0
-    for i in range(len(freqData)//2+len(freqData)//3):
-        freqData[len(freqData)-1-i] = 0
-    return freqData
+    for i in range(lowFilter):
+        dbData[i] = 0
+    for i in range(len(dbData)-highFilter):
+        dbData[highFilter + i] = 0
+    """for i in range(len(dbData)//2+len(dbData)//3):
+        dbData[len(dbData)-1-i] = 0"""
+    return dbData
+
+def freqToIndex (intfreq,desiredFrequency):
+    """
+    converts the input given in Hz desiredFrequency to the index of this frequency in the freq table.
+    It converts first the frequencies table to integer values
+    """
+    for i in range(len(intfreq)):
+          intfreq[i] = int(intfreq[i])
+    
+    return np.where(intfreq >= desiredFrequency)[0][0]
 
 
 def divideFreq(db,factor):

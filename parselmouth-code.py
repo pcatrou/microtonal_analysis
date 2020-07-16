@@ -4,11 +4,13 @@ import seaborn as sns
 import parselmouth as ps
 #### already exiting pitch detectoir ####
 
-sns.set() # Use seaborn's default style to make attractive graphs
-#file_name = "test-lea"
+#sns.set() # Use seaborn's default style to make attractive graphs
+file_name = "test-lea"
 #file_name = "2015-11-09-20_02_57-cut"
 #file_name = "05416"
-file_name = "a77547-cut"
+#file_name = "a77547" #+"-cut"
+file_name = "drumel"
+#file_name = "Gram-5080-_Biniou-cut"
 
 audioData = "audio_data/"+file_name+".wav"
 # Plot nice figures using Python's "standard" matplotlib library
@@ -38,8 +40,8 @@ def draw_pitch(pitch):
     # replace unvoiced samples by NaN to not plot
     pitch_values = pitch.selected_array['frequency']
     pitch_values[pitch_values==0] = np.nan
-    plt.plot(pitch.xs(), pitch_values, 'o', markersize=2, color='w')
-    plt.plot(pitch.xs(), pitch_values, 'o', markersize=1)
+    plt.plot(pitch.xs(), pitch_values,color='black')
+    #plt.plot(pitch.xs(), pitch_values, 'o', markersize=1)
     #plt.grid(False)
     #plt.ylim(0, pitch.ceiling)
     #plt.ylabel("fundamental frequency [Hz]")
@@ -58,12 +60,22 @@ plt.show() # or plt.savefig("spectrogram_0.03.pdf")
 '''
 pitch = snd.to_pitch()
 # If desired, pre-emphasize the sound fragment before calculating the spectrogram
-pre_emphasized_snd = snd.copy()
-pre_emphasized_snd.pre_emphasize()
-spectrogram = pre_emphasized_snd.to_spectrogram(window_length=0.03, maximum_frequency=8000)
-plt.figure()
+#pre_emphasized_snd = snd.copy()
+#pre_emphasized_snd.pre_emphasize()
+#spectrogram = pre_emphasized_snd.to_spectrogram(window_length=0.03, maximum_frequency=8000)
+#plt.figure()
 #draw_spectrogram(spectrogram)
-plt.twinx()
+#plt.twinx()
 draw_pitch(pitch)
 plt.xlim([snd.xmin, snd.xmax])
+
+tonic = 242 #lousie le gall
+tonic = 181 #drumel
+#tonic = 295 # lea
+plt.plot(tonic*np.ones(len(pitch.xs())))
+plt.plot(tonic*2**(8/12)*np.ones(len(pitch.xs())))
+for i in [2,3,4,5,7]:
+    plt.plot(tonic*2**(i/12)*np.ones(len(pitch.xs())))
+    plt.plot(tonic*2**(-i/12)*np.ones(len(pitch.xs())))
+
 plt.show() # or plt.savefig("spectrogram_0.03.pdf")
