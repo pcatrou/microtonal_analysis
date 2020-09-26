@@ -14,16 +14,16 @@ def cutAudio (startMin,startSec,endMin,endSec):
 
     extract.export(files_path+ file_name+'-cut.wav', format="wav")
 
-
-file_name = "01 Marches"
 file_name = "Echelle biniou big"
-extension = ".m4a"
 file_name = "Biniou Kerne"
 extension = ".mov"
+
+file_name = "01 Marches"
+extension = ".m4a"
 #file_name = "2015-11-09-20_02_57"
 #extension = ".wav"
-src = "audio_data/to_convert/"+file_name+extension
-dst = "audio_data/"+file_name+".wav"
+src = "audio_data/to_convert/hist_rec/"+file_name+extension
+dst = "audio_data/hist_rec/"+file_name+".wav"
 
 if extension != ".wav":
     convertAudioToWav(src,dst)

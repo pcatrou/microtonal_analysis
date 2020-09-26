@@ -1,6 +1,6 @@
 import numpy as np
 
-THRESHOLD_VALUE_FOR_FILTERING = 31
+THRESHOLD_VALUE_FOR_FILTERING = 35
 
 def getEnvelope(ampl,timeCoeff):
     """
@@ -84,12 +84,12 @@ def getPitch(dbData,filteredEnvelope,timeCoef,frequencies,lowFilter, highFilter)
     pitchValues
     """
     maxIndex = getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter,highFilter)
-    pitchValues = np.array([])
+    pitchValues = []
     for i in range(len(maxIndex)):
         if (maxIndex[i] != None and maxIndex[i]>10):
-            pitchValues = np.append(pitchValues,frequencies[int(maxIndex[i])])
+            pitchValues.append(frequencies[int(maxIndex[i])])
         else:
-            pitchValues = np.append(pitchValues,[None])
+            pitchValues.append(None)
     
     return pitchValues
 
@@ -115,15 +115,11 @@ def filterHighLowFreq (dbData,lowFilter,highFilter):
         dbData[len(dbData)-1-i] = 0"""
     return dbData
 
-def freqToIndex (intfreq,desiredFrequency):
+def freqToIndex (IntegerFrequencies,desiredFrequency):
     """
     converts the input given in Hz desiredFrequency to the index of this frequency in the freq table.
-    It converts first the frequencies table to integer values
     """
-    for i in range(len(intfreq)):
-          intfreq[i] = int(intfreq[i])
-    
-    return np.where(intfreq >= desiredFrequency)[0][0]
+    return np.where(IntegerFrequencies >= desiredFrequency)[0][0]
 
 
 def divideFreq(db,factor):
