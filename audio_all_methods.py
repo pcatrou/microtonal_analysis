@@ -1,7 +1,5 @@
 import numpy as np
 
-THRESHOLD_VALUE_FOR_FILTERING = 35
-
 def getEnvelope(ampl,timeCoeff):
     """
     Get the amplitude envelope of audio data. the time indent is changed to timeCoeff
@@ -42,6 +40,7 @@ def getfilteredEnvelope (envelope,intensityThreshold):
             filteredEnvelope = np.append(filteredEnvelope, None)
     return filteredEnvelope
 
+THRESHOLD_VALUE_FOR_FILTERING = 35
 # note : faster with np.append than x[i]
 def getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter,highFilter):
     """
@@ -93,6 +92,15 @@ def getPitch(dbData,filteredEnvelope,timeCoef,frequencies,lowFilter, highFilter)
     
     return pitchValues
 
+def getAllNotesVariations(pitchLines):
+    noteValues = []
+    for i in range(len(pitchLines)):
+        noteValuesForOneNote = []
+        for j in range(len(pitchLines[i])-1):
+            if pitchLines[i][j] != None :
+                noteValuesForOneNote.append(pitchLines[i][j])
+        noteValues.append(noteValuesForOneNote)
+    return noteValues
 
 def filterHighLowFreq (dbData,lowFilter,highFilter):
     """
