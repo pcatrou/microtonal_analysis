@@ -1,3 +1,4 @@
+import time
 import librosa
 import librosa.display
 import numpy as np
@@ -7,8 +8,9 @@ from scipy.io import wavfile
 from matplotlib import pyplot as plt
 
 import audio_all_methods as functions
+import Consts
 # imports duration : 11s
-import time
+
 start_time = time.time()
 
 #######################
@@ -20,7 +22,7 @@ file_name = "a77547" #+"-cut"
 file_name = "Gram-5080-_Biniou" +"-cut"
 #file_name = "kervaRabe" +"-cut"
 #file_name = "henaffMeunier-cut"
-file_name = "01 Marches-cut"
+file_name = "01 Marches-2"#-2"#-cut"
 #file_name = "Echelle biniou big"
 #file_name = "biniou Kerne"
 
@@ -96,41 +98,60 @@ def getAllPitchLines(frequenciesBound):
         pitchLines.append(pitchLine)
     return pitchLines
 
-frequenciesBound = [461,485,523,585,661,728,758,804,855,905,975]
+frequenciesBound = Consts.FREQ_BOUND_MARCHES
 pitchLines = getAllPitchLines(frequenciesBound)
+
+### Correction for IV (noise values)
+degree = 5
+for i in range (len(pitchLines[degree])):
+    if pitchLines[degree][i] != None and pitchLines[degree][i] < 682:
+        pitchLines[degree][i] = None
 
 noteValues = functions.getAllNotesVariations(pitchLines)
 
-tonic = 505
+tonic = Consts.TONIC_MARCHES
 averageNoteValue = []
 noteDeviationInCents=[]
-noteHalfTone = [-1,0,2,4,5,7,7,9,10,11]
+noteHalfTone = [-1,0,1,2,4,5,None,7,9,10,11]
+halfTonesFinal = []
 for i in range(len(noteValues)):
-    if (sum(noteValues[i])):
+    if sum(noteValues[i]) and noteHalfTone[i] != None:
         averageNoteValue.append(sum(noteValues[i])/len(noteValues[i]))
         noteDeviationInCents.append(1200*np.log2(averageNoteValue[-1]/tonic) - 100*noteHalfTone[i])
+        halfTonesFinal.append(noteHalfTone[i])
 
 #############
 # plot 
 #############
+fig, (ax1, ax2) = plt.subplots(1, 2)
 frameSize = len(noteValues[1])
 
 degrees = [tonic, tonic*(9/8),tonic*(5/4),tonic*(4/3),tonic*(3/2),tonic*(5/3),tonic*(7/4),tonic*2]
 
 for i in range(len(degrees)):
-    plt.plot(degrees[i]*np.ones(frameSize),'k')
+    ax1.plot(degrees[i]*np.ones(frameSize),'k')
 
 for i in [-1,1,3,6,8,11]:
-    plt.plot(tonic*2**(i/12)*np.ones(frameSize),'k--')
+    ax1.plot(tonic*2**(i/12)*np.ones(frameSize),'k--')
 
 for i in range(len(noteValues)):
-    plt.plot(noteValues[i])
+    if i != 6:
+        ax1.plot(noteValues[i])
+
+if(False): # Used to check where the notes are
+    for i in range(len(pitchLines)):
+        ax1.plot(pitchLines[i])
 
 print("total duration : ",time.time() - start_time)
 
+ax2.plot(halfTonesFinal,noteDeviationInCents,'o')
+ax2.plot(halfTonesFinal,np.zeros(len(halfTonesFinal)),'k')
+ax2.grid(True)
+ax1.set_title('notes variations during tune')
+ax1.set(xlabel='occurence number of the note',ylabel='frequency (Hz)')
+ax2.set(xlabel='half-tone to tonic',ylabel='deviation to ET (cents)')
+ax2.set_title('Notes offset to Equal Temperament (ET)')
+
 plt.show()
 
-plt.plot(noteDeviationInCents,'o')
-plt.plot(np.zeros(len(noteDeviationInCents)),'k')
-plt.show()
 

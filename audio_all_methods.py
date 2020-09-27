@@ -1,4 +1,5 @@
 import numpy as np
+import Consts
 
 def getEnvelope(ampl,timeCoeff):
     """
@@ -40,7 +41,7 @@ def getfilteredEnvelope (envelope,intensityThreshold):
             filteredEnvelope = np.append(filteredEnvelope, None)
     return filteredEnvelope
 
-THRESHOLD_VALUE_FOR_FILTERING = 35
+
 # note : faster with np.append than x[i]
 def getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter,highFilter):
     """
@@ -64,7 +65,7 @@ def getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter,highFilter):
     #rev_data = dbData.transpose()
 
     for i in range(len(dbData[1])-timeCoef-1):
-            if (filteredEnvelope[i*timeCoef] == None or np.max(rev_data[i])<THRESHOLD_VALUE_FOR_FILTERING): #TODO mettre la valeur en variable ?
+            if (filteredEnvelope[i*timeCoef] == None or np.max(rev_data[i])<Consts.THRESHOLD_VALUE_FOR_FILTERING): #TODO mettre la valeur en variable ?
                 maxIndex =np.append(maxIndex,None)
             else:
                 maxIndex =np.append(maxIndex, int(np.argmax(rev_data[i])))

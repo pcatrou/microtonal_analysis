@@ -12,11 +12,11 @@ def cutAudio (startMin,startSec,endMin,endSec):
     song = AudioSegment.from_mp3( files_path+file_name+'.wav' )
     extract = song[startTime:endTime]
 
-    extract.export(files_path+ file_name+'-cut.wav', format="wav")
+    extract.export(files_path+ file_name+'-2.wav', format="wav")
 
-file_name = "Echelle biniou big"
-file_name = "Biniou Kerne"
-extension = ".mov"
+# file_name = "Echelle biniou big"
+# file_name = "Biniou Kerne"
+# extension = ".mov"
 
 file_name = "01 Marches"
 extension = ".m4a"
@@ -28,14 +28,13 @@ dst = "audio_data/hist_rec/"+file_name+".wav"
 if extension != ".wav":
     convertAudioToWav(src,dst)
 
-files_path = 'audio_data/'#hist_rec/'
-"""
-startMin = 0
-startSec = 0
+files_path = 'audio_data/hist_rec/'
 
-endMin = 0
+startMin = 0
+startSec = 2
+
+endMin = 3
 endSec = 11
 
 cutAudio (startMin,startSec,endMin,endSec)
 # Time to miliseconds
-"""
