@@ -1,4 +1,4 @@
 .vscode/
-audio_data/
+src/audio_data/
 __pycache__/
 .VSCodeCounter/
