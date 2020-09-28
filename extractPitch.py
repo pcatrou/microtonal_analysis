@@ -101,11 +101,12 @@ def getAllPitchLines(frequenciesBound):
 frequenciesBound = Consts.FREQ_BOUND_MARCHES
 pitchLines = getAllPitchLines(frequenciesBound)
 
-### Correction for IV (noise values)
-degree = 5
-for i in range (len(pitchLines[degree])):
-    if pitchLines[degree][i] != None and pitchLines[degree][i] < 682:
-        pitchLines[degree][i] = None
+if (False):
+    ### Correction for IV (noise values)
+    degree = 5
+    for i in range (len(pitchLines[degree])):
+        if pitchLines[degree][i] != None and pitchLines[degree][i] < 677:
+            pitchLines[degree][i] = None
 
 noteValues = functions.getAllNotesVariations(pitchLines)
 
@@ -123,11 +124,11 @@ for i in range(len(noteValues)):
 #############
 # plot 
 #############
+"""
 fig, (ax1, ax2) = plt.subplots(1, 2)
 frameSize = len(noteValues[1])
 
 degrees = [tonic, tonic*(9/8),tonic*(5/4),tonic*(4/3),tonic*(3/2),tonic*(5/3),tonic*(7/4),tonic*2]
-
 for i in range(len(degrees)):
     ax1.plot(degrees[i]*np.ones(frameSize),'k')
 
@@ -138,11 +139,12 @@ for i in range(len(noteValues)):
     if i != 6:
         ax1.plot(noteValues[i])
 
-if(False): # Used to check where the notes are
-    for i in range(len(pitchLines)):
-        ax1.plot(pitchLines[i])
+
 
 print("total duration : ",time.time() - start_time)
+
+
+
 
 ax2.plot(halfTonesFinal,noteDeviationInCents,'o')
 ax2.plot(halfTonesFinal,np.zeros(len(halfTonesFinal)),'k')
@@ -153,5 +155,26 @@ ax2.set(xlabel='half-tone to tonic',ylabel='deviation to ET (cents)')
 ax2.set_title('Notes offset to Equal Temperament (ET)')
 
 plt.show()
+"""
 
+###
+# plot figures to show validity of the method
+###
+"""
+if(True): # Used to check where the notes are
+    for i in range(len(pitchLines)):
+        plt.plot(pitchLines[i],'k')
+"""
+"""
+Put True to see the spectrogram only on short range
+"""
+if (True):
+    plt.plot(stftTime/(num_fft//2048),pitchLines[5],'k')
+    LOW_FILTER_FREQUENCY = 661
+    HIGH_FILTER_FREQUENCY = 728
+    lowFilterIndex = functions.freqToIndex(frequencies,LOW_FILTER_FREQUENCY)
+    highFilterIndex = functions.freqToIndex(frequencies,HIGH_FILTER_FREQUENCY)
+    dbDataInit = functions.filterHighLowFreq(dbDataInit,lowFilterIndex,highFilterIndex)
 
+librosa.display.specshow(dbDataInit, sr=sampleRate, x_axis='time', y_axis='hz')
+plt.show()
