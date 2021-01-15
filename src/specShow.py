@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.fftpack import fft
 from scipy.io import wavfile
 from matplotlib import pyplot as plt
-
+import Consts as Consts
 import audio_all_methods as functions
 # imports duration : 11s
 import time
@@ -22,8 +22,12 @@ file_name = "a77547" #+"-cut"
 file_name = "Gram-5080-_Biniou" +"-cut"
 #file_name = "kervaRabe" +"-cut"
 #file_name = "henaffMeunier-cut"
+file_name = "27-Laridé"
+#file_name="29-M_ami-Mandal-_-En-Dro"
+file_name = "Echelle biniou big"
+file_name = "30_Laride_Bal"
+file_name = "26-En-Dro-cut"
 file_name = "01 Marches-cut"
-#file_name = "Echelle biniou big"
 #file_name = "biniou Kerne"
 
 #file_name = "lhn_yt-cut"
@@ -34,8 +38,8 @@ file_name = "01 Marches-cut"
 #file_name = "05416"+"-cut"
 #file_name = "a77547"+"-cut"
 
-#audioData = "audio_data/"+file_name+".wav"
-audioData = "audio_data/hist_rec/"+file_name+".wav"
+audioData = "src/audio_data/"+file_name+".wav"
+audioData = "src/audio_data/hist_rec/"+file_name+".wav"
 
 
 amplitude,sampleRate = librosa.load(audioData)
@@ -60,6 +64,14 @@ frequencies = librosa.fft_frequencies(sr=sampleRate, n_fft=num_fft)
 stftData = librosa.stft(amplitude,n_fft=num_fft) # par defaut intervalle de temps de 2048 itérations soit 93ms
 
 dbDataInit = librosa.amplitude_to_db(abs(stftData))
+minOfDb = np.min(dbDataInit)
+
+filterSpectrum = False
+if (filterSpectrum):
+    for j in range(len(dbDataInit)):
+        for i in range(len(dbDataInit[j])):
+            if (dbDataInit[j][i]<Consts.THRESHOLD_VALUE_FOR_FILTERING):
+                dbDataInit[j][i] = -29
 
 """
 Put True to see the spectrogram only on short range
@@ -80,15 +92,17 @@ if (False):
 #tonic = 256 #lousie le gall
 #tonic = 990 #nedelec
 #tonic = 295 # lea
-tonic = 505
-degrees = [tonic, tonic*(9/8),tonic*(5/4),tonic*(4/3),tonic*(3/2),tonic*(5/3),tonic*(7/4),tonic*2]
-for i in range(len(degrees)):
-    plt.plot(stftTime/(num_fft//2048),degrees[i]*np.ones(len(envelope)),'k')
+tonic = Consts.TONIC_LARIDE_1908
+if (True):
+    degrees = [tonic, tonic*(9/8),tonic*(5/4),tonic*(4/3),tonic*(3/2),tonic*(5/3),tonic*(7/4),tonic*2]
 
-for i in [-1,1,3,6,8,11]:
-    plt.plot(stftTime/(num_fft//2048),tonic*2**(i/12)*np.ones(len(envelope)),'k--')
+    for i in range(len(degrees)):
+        plt.plot(stftTime/(num_fft//2048),degrees[i]*np.ones(len(envelope)),'k')
 
-librosa.display.specshow(dbDataInit, sr=sampleRate, x_axis='time', y_axis='hz')
+    for i in [-1,1,3,6,8,11]:
+        plt.plot(stftTime/(num_fft//2048),tonic*2**(i/12)*np.ones(len(envelope)),'k--')
+
+librosa.display.specshow(dbDataInit, sr=sampleRate, x_axis='time', y_axis='log')
 
 print("total duration : ",time.time() - start_time)
 

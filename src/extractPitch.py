@@ -8,7 +8,7 @@ from scipy.io import wavfile
 from matplotlib import pyplot as plt
 
 import audio_all_methods as functions
-import Consts
+import Consts as Consts
 # imports duration : 11s
 
 start_time = time.time()
@@ -22,20 +22,13 @@ file_name = "a77547" #+"-cut"
 file_name = "Gram-5080-_Biniou" +"-cut"
 #file_name = "kervaRabe" +"-cut"
 #file_name = "henaffMeunier-cut"
-file_name = "01 Marches-2"#-2"#-cut"
-#file_name = "Echelle biniou big"
-#file_name = "biniou Kerne"
-
-#file_name = "lhn_yt-cut"
-#file_name = "2015-11-09-20_02_57"
-#file_name = "lebotCosquer-cut"
-#file_name = "20809-cut"
-#file_name = "20350-cut"
-#file_name = "05416"+"-cut"
-#file_name = "a77547"+"-cut"
-
-#audioData = "audio_data/"+file_name+".wav"
-audioData = "audio_data/hist_rec/"+file_name+".wav"
+file_name = "27-Laridé" # magadur
+file_name = "Echelle biniou big"
+file_name = "26-En-Dro"
+file_name = "30_Laride_Bal" # tanguy/Le lain
+file_name = "01 Marches"#-2"#-cut" marche bigoud
+audioData = "src/audio_data/hist_rec/"+file_name+".wav"
+#audioData = "src/audio_data/"+file_name+".wav"
 amplitude,sampleRate = librosa.load(audioData)
 
 #########################
@@ -101,19 +94,22 @@ def getAllPitchLines(frequenciesBound):
 frequenciesBound = Consts.FREQ_BOUND_MARCHES
 pitchLines = getAllPitchLines(frequenciesBound)
 
-if (False):
-    ### Correction for IV (noise values)
-    degree = 5
+if (True):
+    ### Correction for III (noise values)
+    degree = 4
     for i in range (len(pitchLines[degree])):
-        if pitchLines[degree][i] != None and pitchLines[degree][i] < 677:
+        if pitchLines[degree][i] != None and pitchLines[degree][i] > 645:
             pitchLines[degree][i] = None
-
+# set to None values for minor second because it is irrelevant
+for i in range(len(pitchLines[2])):
+    pitchLines[2][i]=None
 noteValues = functions.getAllNotesVariations(pitchLines)
 
 tonic = Consts.TONIC_MARCHES
 averageNoteValue = []
 noteDeviationInCents=[]
 noteHalfTone = [-1,0,1,2,4,5,None,7,9,10,11]
+noteHalfTone = [-1,0,None,2,4,5,None,7,9,10,11]
 halfTonesFinal = []
 for i in range(len(noteValues)):
     if sum(noteValues[i]) and noteHalfTone[i] != None:
@@ -124,7 +120,7 @@ for i in range(len(noteValues)):
 #############
 # plot 
 #############
-"""
+
 fig, (ax1, ax2) = plt.subplots(1, 2)
 frameSize = len(noteValues[1])
 
@@ -137,14 +133,9 @@ for i in [-1,1,3,6,8,11]:
 
 for i in range(len(noteValues)):
     if i != 6:
-        ax1.plot(noteValues[i])
-
-
+        ax1.plot(noteValues[i],'.')
 
 print("total duration : ",time.time() - start_time)
-
-
-
 
 ax2.plot(halfTonesFinal,noteDeviationInCents,'o')
 ax2.plot(halfTonesFinal,np.zeros(len(halfTonesFinal)),'k')
@@ -155,26 +146,34 @@ ax2.set(xlabel='half-tone to tonic',ylabel='deviation to ET (cents)')
 ax2.set_title('Notes offset to Equal Temperament (ET)')
 
 plt.show()
-"""
+
 
 ###
 # plot figures to show validity of the method
 ###
-"""
-if(True): # Used to check where the notes are
+
+if(False): # Used to check where the notes are
     for i in range(len(pitchLines)):
         plt.plot(pitchLines[i],'k')
-"""
+
 """
 Put True to see the spectrogram only on short range
 """
-if (True):
+if (False):
     plt.plot(stftTime/(num_fft//2048),pitchLines[5],'k')
     LOW_FILTER_FREQUENCY = 661
     HIGH_FILTER_FREQUENCY = 728
     lowFilterIndex = functions.freqToIndex(frequencies,LOW_FILTER_FREQUENCY)
     highFilterIndex = functions.freqToIndex(frequencies,HIGH_FILTER_FREQUENCY)
     dbDataInit = functions.filterHighLowFreq(dbDataInit,lowFilterIndex,highFilterIndex)
+    librosa.display.specshow(dbDataInit, sr=sampleRate, x_axis='time', y_axis='hz',fmin=661,fmax=728)
+    #plt.specgram(dbDataInit)
+    scale_factor = 4
+    plt.show()
 
-librosa.display.specshow(dbDataInit, sr=sampleRate, x_axis='time', y_axis='hz')
-plt.show()
+
+
+# xmin, xmax = plt.xlim()
+# plt.xlim(xmin * scale_factor, xmax * scale_factor)
+
+
