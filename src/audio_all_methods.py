@@ -65,7 +65,7 @@ def getMaxIndex (dbData,filteredEnvelope,timeCoef,lowFilter,highFilter):
     #rev_data = dbData.transpose()
 
     for i in range(len(dbData[1])-timeCoef-1):
-            if (filteredEnvelope[i*timeCoef] == None or np.max(rev_data[i])<Consts.THRESHOLD_VALUE_FOR_FILTERING): #TODO mettre la valeur en variable ?
+            if (filteredEnvelope[i*timeCoef] == None or np.max(rev_data[i])<Consts.THRESHOLD_VALUE_FOR_FILTERING):
                 maxIndex =np.append(maxIndex,None)
             else:
                 maxIndex =np.append(maxIndex, int(np.argmax(rev_data[i])))

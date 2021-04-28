@@ -2,3 +2,5 @@
 src/audio_data/
 __pycache__/
 .VSCodeCounter/
+noteDeviations/
+freq.txt
